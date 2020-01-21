@@ -1,23 +1,31 @@
 import { Injectable } from '@angular/core';
-import { Store, StoreConfig } from '@datorama/akita';
+import { Store, StoreConfig, arrayAdd } from '@datorama/akita';
+import { StateData } from 'src/app/Common/state';
 
 export interface StateState {
-   key: string;
+  stateData: Array<{name: string, desciprtion: string}>;
 }
 
 export function createInitialState(): StateState {
   return {
-    key: ''
+    stateData: []
   };
 }
 
 @Injectable({ providedIn: 'root' })
-@StoreConfig({ name: 'state' })
+@StoreConfig({ name: 'stateData' })
 export class StateStore extends Store<StateState> {
 
   constructor() {
     super(createInitialState());
   }
 
+  add(data: StateData) {
+    this.update((state: StateState) => {
+      return ({
+        stateData: arrayAdd(state.stateData , data)
+      });
+    });
+  }
 }
 
