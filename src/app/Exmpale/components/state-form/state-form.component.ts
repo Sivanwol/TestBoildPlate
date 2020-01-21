@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { StateData } from "src/app/Common/state";
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from "@angular/forms";
 
 @Component({
   selector: "app-state-form",
@@ -11,8 +11,11 @@ import { FormBuilder, Validators } from '@angular/forms';
 export class StateFormComponent implements OnInit {
   public form = null;
   public formTitle = "Adding new state";
-  constructor(public dialogRef: MatDialogRef<StateFormComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: StateData, private fb: FormBuilder) { }
+  constructor(
+    public dialogRef: MatDialogRef<StateFormComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: StateData,
+    private fb: FormBuilder
+  ) {}
 
   ngOnInit() {
     this.initalForm();
@@ -22,10 +25,11 @@ export class StateFormComponent implements OnInit {
   }
   initalForm() {
     this.form = this.fb.group({
-      name: [this.data.name, [Validators.required,
-        Validators.minLength(4),
-        Validators.maxLength(6)]],
-        desciprtion: [this.data.desciprtion || "" ]
+      name: [
+        this.data.name,
+        [Validators.required, Validators.minLength(4), Validators.maxLength(6)]
+      ],
+      desciprtion: [this.data.desciprtion || ""]
     });
   }
   onSubmitClick(): void {
