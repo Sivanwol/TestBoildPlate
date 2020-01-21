@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { StateFormComponent } from "../state-form/state-form.component";
 import { StateData } from "src/app/Common/state";
@@ -12,36 +12,57 @@ import { tap } from "rxjs/operators";
 })
 export class MainTestComponent implements OnInit {
 
-  public displayedColumns: string[] = ["desciprtion", "name"];
+  public displayedColumns: string[] = ["desciprtion", "name", "actions"];
   public list$: Observable<{
     name: string;
     desciprtion: string;
 }[]> = null;
   public hasDataDisplay = false;
-  constructor(public dialog: MatDialog, private stateService: StateService) { }
+  constructor(public dialog: MatDialog, private stateService: StateService, private changeDetectorRef: ChangeDetectorRef) { }
 
   ngOnInit() {
+  }
+
+  public OnEditState(entity: StateData) {
+    this.handleFormDisalog({name: entity.name, desciprtion: entity.desciprtion, existed: true});
+  }
+
+  public OnRemoveState(entity: StateData) {
+
+  }
+
+  public OnNewState() {
+    this.handleFormDisalog({name: "", desciprtion: "", existed: false});
+  }
+
+  private reloadList() {
     this.list$ = this.stateService.GetAll().pipe(
       tap(result => {
         this.hasDataDisplay = false;
         if (result.length > 0) {
           this.hasDataDisplay = true;
         }
+        this.changeDetectorRef.detectChanges();
       })
     );
   }
-
-  public OnNewState() {
+  private handleFormDisalog( entity: StateData) {
+    const editStateOrignalName = entity.name;
     const dialogRef = this.dialog.open(StateFormComponent, {
       width: "250px",
-      data: {name: "", desciprtion: ""}
+      data: entity
     });
 
     dialogRef.afterClosed().subscribe((result: StateData) => {
       if (result.valid) {
-        this.stateService.Add(result);
+        if (result.existed) {
+          this.stateService.Edit(editStateOrignalName, result);
+        } else {
+          this.stateService.Add(result);
+        }
       }
-      this.list$ = this.stateService.GetAll();
+      this.hasDataDisplay = true;
+      this.reloadList();
       console.log("The dialog was closed", result);
     });
   }

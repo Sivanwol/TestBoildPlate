@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Store, StoreConfig, arrayAdd } from '@datorama/akita';
+import { Store, StoreConfig, arrayAdd, arrayUpdate } from '@datorama/akita';
 import { StateData } from 'src/app/Common/state';
 
 export interface StateState {
-  stateData: Array<{name: string, desciprtion: string}>;
+  list: Array<StateData>;
 }
 
 export function createInitialState(): StateState {
   return {
-    stateData: []
+    list: []
   };
 }
 
@@ -23,7 +23,14 @@ export class StateStore extends Store<StateState> {
   add(data: StateData) {
     this.update((state: StateState) => {
       return ({
-        stateData: arrayAdd(state.stateData , data)
+        list: arrayAdd(state.list , data)
+      });
+    });
+  }
+  edit(stateName, data: StateData) {
+    this.update((state: StateState) => {
+      return ({
+        list: arrayUpdate(state.list , (item => item.name === stateName), data)
       });
     });
   }

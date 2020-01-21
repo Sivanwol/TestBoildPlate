@@ -1,12 +1,13 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { StateStore } from '../store/state.store';
-import { arrayUpdate, arrayAdd, arrayRemove, arrayUpsert } from '@datorama/akita';
-import { StateData } from 'src/app/Common/state';
-import { StateQuery } from '../queries';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { StateStore } from "../store/state.store";
+import { StateData } from "src/app/Common/state";
+import { StateQuery } from "../queries";
+import { tap, find } from "rxjs/operators";
+import { Observable } from 'rxjs';
 
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class StateService {
 
   constructor(private stateStore: StateStore,
@@ -22,6 +23,17 @@ export class StateService {
     delete data.existed;
     delete data.valid;
     this.stateStore.add(data);
+  }
+
+  public Edit(stateName , data: StateData) {
+    delete data.existed;
+    delete data.valid;
+    this.stateQuery.find(stateName).pipe(
+      find(item => !!item),
+      tap(item => {
+        this.stateStore.edit(stateName, data);
+      })
+    ).subscribe();
   }
 
 }
