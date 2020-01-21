@@ -28,7 +28,7 @@ export class MainTestComponent implements OnInit {
   }
 
   public OnRemoveState(entity: StateData) {
-
+    this.stateService.Delete(entity.name);
   }
 
   public OnNewState() {

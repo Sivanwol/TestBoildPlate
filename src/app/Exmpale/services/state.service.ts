@@ -36,4 +36,13 @@ export class StateService {
     ).subscribe();
   }
 
+  public Delete(stateName ) {
+    this.stateQuery.find(stateName).pipe(
+      find(item => !!item),
+      tap(item => {
+        this.stateStore.remove(stateName);
+      })
+    ).subscribe();
+  }
+
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Store, StoreConfig, arrayAdd, arrayUpdate } from '@datorama/akita';
+import { Store, StoreConfig, arrayAdd, arrayUpdate, arrayRemove } from '@datorama/akita';
 import { StateData } from 'src/app/Common/state';
 
 export interface StateState {
@@ -31,6 +31,13 @@ export class StateStore extends Store<StateState> {
     this.update((state: StateState) => {
       return ({
         list: arrayUpdate(state.list , (item => item.name === stateName), data)
+      });
+    });
+  }
+  remove(stateName) {
+    this.update((state: StateState) => {
+      return ({
+        list: arrayRemove(state.list , (item => item.name === stateName))
       });
     });
   }
