@@ -9,6 +9,7 @@ import { AkitaNgRouterStoreModule } from '@datorama/akita-ng-router-store';
 import { environment } from '../environments/environment';
 import { ExmpaleModule } from './Exmpale/exmpale.module';
 import { SiteTestsModule } from './SiteTests/sitetests.module';
+import { AppMaterialModule } from './Common/app.material.module';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { SiteTestsModule } from './SiteTests/sitetests.module';
     AppRoutingModule,
     BrowserAnimationsModule,
     environment.production ? [] : AkitaNgDevtools.forRoot(),
-    AkitaNgRouterStoreModule.forRoot()
+    AkitaNgRouterStoreModule.forRoot(),
+    AppMaterialModule
   ],
   providers: [],
   bootstrap: [AppComponent]
