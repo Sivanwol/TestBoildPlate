@@ -1,0 +1,33 @@
+<mat-drawer-container class="example-container">
+  <mat-drawer mode="side" opened>
+    <mat-list>
+      <h3 mat-subheader>Pages</h3>
+      <mat-list-item>
+        <mat-icon mat-list-icon>double_arrow</mat-icon>
+        <a routerLink="/test/page1" routerLinkActive="active">
+          <h4 mat-line>Exmaple</h4>
+          <p mat-line>Page 1</p>
+        </a>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <mat-icon mat-list-icon>double_arrow</mat-icon>
+        <a routerLink="/test/page2" routerLinkActive="active">
+          <h4 mat-line>Exmaple</h4>
+          <p mat-line>Page 2</p>
+        </a>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <mat-icon mat-list-icon>double_arrow</mat-icon>
+        <a routerLink="/showcase" routerLinkActive="active">
+          <h4 mat-line>{{title}}</h4>
+        </a>
+      </mat-list-item>
+    </mat-list>
+  </mat-drawer>
+  <mat-drawer-content>
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container>
+
