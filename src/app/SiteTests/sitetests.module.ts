@@ -1,12 +1,12 @@
 
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { XsitesComponent } from "./components";
 import {SiteTestsRoutingModule} from "./sitetests-routing.module";
+import { HpTestModule } from './components/hp-test/hp-test.module';
 @NgModule({
-  declarations: [XsitesComponent],
+  declarations: [],
   providers: [],
-  imports: [CommonModule, SiteTestsRoutingModule]
+  imports: [CommonModule, HpTestModule, SiteTestsRoutingModule]
 })
 
 export class SiteTestsModule { }

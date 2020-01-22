@@ -1,10 +1,10 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
-import { XsitesComponent } from "./components";
+import { BookMainPageComponent } from './components/hp-test/compounents/book-main-page/book-main-page.component';
 
 
 const routes: Routes = [
-  { path: "test/showcase", component: XsitesComponent }
+  { path: "test/showcase", component: BookMainPageComponent }
 ];
 
 @NgModule({
