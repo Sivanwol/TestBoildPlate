@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from "@angular/forms";
 
 @Component({
   selector: 'app-book-search-bar',
@@ -6,10 +7,20 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./book-search-bar.component.scss']
 })
 export class BookSearchBarComponent implements OnInit {
+  public form = null;
 
-  constructor() { }
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
+    this.initalForm();
+  }
+  initalForm() {
+    this.form = this.fb.group({
+      query: [
+        "",[Validators.required, Validators.minLength(2)]
+      ],
+      onlyEbook: [""]
+    });
   }
 
 }
