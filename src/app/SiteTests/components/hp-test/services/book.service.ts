@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ID } from "@datorama/akita";
 import { HttpClient } from "@angular/common/http";
-import { tap, switchMap } from "rxjs/operators";
+import { tap, switchMap, take } from "rxjs/operators";
 import { throwError, Observable } from "rxjs";
 import { BookResult, BookItem } from "../models/book.model";
 import { BookStore } from "../store/book.store";
@@ -20,6 +20,7 @@ export class BookService {
 // har&startIndex=&maxResults=40&filter=ebooks
   getBooks(searchQuery: string , nextPage = false, onlyEbooks = false): Observable<Array<BookItem>> {
     return this.bookQuery.getSearchMetaData().pipe(
+      take(1),
       tap(result => this.lastSearchMetaData = result),
       switchMap(result => {
         let startIndex = result.currentStartIndex;
@@ -31,12 +32,18 @@ export class BookService {
           searchParams += "&filter=ebooks";
         }
         const ApiURI = this.ApiURI + searchParams;
-        if (startIndex === 0 && searchQuery !== this.lastSearchQuery) {
+        if (searchQuery !== this.lastSearchQuery) {
+          startIndex = 0;
           this.bookStore.ClearSearch();
-          this.lastSearchQuery = searchQuery;
         }
-        if (this.lastSearchMetaData.maxStartIndex > startIndex) {
+        let newSearch = false;
+        if (startIndex === 0 && this.lastSearchQuery !== searchQuery ) {
+          newSearch = true;
+        }
+        if (this.lastSearchMetaData.maxStartIndex > startIndex || newSearch) {
+          this.lastSearchQuery = searchQuery;
           return this.http.get<BookResult>(ApiURI).pipe(
+            take(1),
             tap((result: BookResult) => {
               const pages = (result.totalItems / this.lastSearchMetaData.pageSize) + (result.totalItems % this.lastSearchMetaData.pageSize);
               const maxStartIndex = this.lastSearchMetaData.maxStartIndex > startIndex ? startIndex : this.lastSearchMetaData.maxStartIndex;
