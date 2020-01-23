@@ -22,6 +22,7 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTableModule} from '@angular/material/table';
+import {MatTooltipModule} from '@angular/material/tooltip';
 @NgModule({
   imports: [
     MatButtonModule,
@@ -47,7 +48,8 @@ import {MatTableModule} from '@angular/material/table';
     MatListModule,
     MatDividerModule,
     MatIconModule,
-    MatTableModule
+    MatTableModule,
+    MatTooltipModule
   ],
   exports: [
     MatButtonModule,
@@ -73,7 +75,8 @@ import {MatTableModule} from '@angular/material/table';
     MatListModule,
     MatDividerModule,
     MatIconModule,
-    MatTableModule
+    MatTableModule,
+    MatTooltipModule
   ]
 })
 export class AppMaterialModule {}

@@ -1,7 +1,3 @@
-<div>
-  <h3 matLine>{{title}}</h3>
-  <img mat-card-avatar class="example-header-image" width="50px" src="{{thubnail}}">
-  <p matLine>
-    <span>{{description}}</span>
-  </p>
-</div>
+<a mat-button color="primary" class="frameItem" (click)="onSelectBook()" [disabled]="{{hasSelected}}">
+  <span matLine ellipsis matTooltip="{{title}}-({{hasEbook}})">{{title}})</span>
+</a>

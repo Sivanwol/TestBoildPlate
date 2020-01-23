@@ -9,8 +9,8 @@ import { BookItem } from "../../models/book.model";
 export class BookListItemComponent implements OnInit {
 
   public title: string;
-  public description: string;
-  public thubnail: string;
+  public hasEbook: string;
+  public hasSelected = false;
   @Input()
   public bookItem: BookItem;
 
@@ -20,8 +20,11 @@ export class BookListItemComponent implements OnInit {
 
   ngOnInit() {
     this.title = this.bookItem.volumeInfo.title;
-    this.description = this.bookItem.volumeInfo.subtitle;
-    this.thubnail = this.bookItem.volumeInfo.imageLinks.smallThumbnail;
+    this.hasEbook = (this.bookItem.saleInfo.isEbook) ? "Has Digital Form" : "Print Only";
+  }
+
+  onSelectBook() {
+    this.bookSelected.emit(this.bookItem);
   }
 
 }

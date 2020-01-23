@@ -11,6 +11,8 @@ import { BookService } from './services/book.service';
 import { BookStore } from './store/book.store';
 import { BookQuery } from './queries/book.query';
 
+import { EllipsisModule } from 'ngx-ellipsis';
+import { NgxSpinnerModule } from "ngx-spinner";
 @NgModule({
   declarations: [
     BookSearchBarComponent,
@@ -24,7 +26,9 @@ import { BookQuery } from './queries/book.query';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    AppMaterialModule
+    AppMaterialModule,
+    NgxSpinnerModule,
+    EllipsisModule
   ]
 })
 export class HpTestModule {}

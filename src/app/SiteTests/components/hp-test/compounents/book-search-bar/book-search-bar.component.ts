@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators, FormGroup } from "@angular/forms";
-import { BookService } from '../../services/book.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { BookService } from "../../services/book.service";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 
 @Component({
   selector: "app-book-search-bar",
@@ -12,7 +12,7 @@ export class BookSearchBarComponent implements OnInit {
   public form: FormGroup = null;
 
   constructor(private fb: FormBuilder,
-    private bookService: BookService) { }
+              private bookService: BookService) { }
 
 
   ngOnInit() {

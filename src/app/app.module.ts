@@ -12,6 +12,8 @@ import { SiteTestsModule } from './SiteTests/sitetests.module';
 import { AppMaterialModule } from './Common/app.material.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { NgxSpinnerModule } from "ngx-spinner";
+import { EllipsisModule } from 'ngx-ellipsis';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { HttpClientModule } from '@angular/common/http';
     environment.production ? [] : AkitaNgDevtools.forRoot(),
     AkitaNgRouterStoreModule.forRoot(),
     AppMaterialModule,
-    HttpClientModule
+    HttpClientModule,
+    NgxSpinnerModule,
+    EllipsisModule
   ],
   providers: [],
   bootstrap: [AppComponent]

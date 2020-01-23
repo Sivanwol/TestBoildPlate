@@ -24,6 +24,8 @@
     "@datorama/akita": "^4.17.4",
     "hammerjs": "^2.0.8",
     "localforage": "^1.7.3",
+    "ngx-ellipsis": "^2.1.2",
+    "ngx-spinner": "^8.1.0",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"

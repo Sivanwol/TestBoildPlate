@@ -6,6 +6,7 @@ import { throwError, Observable, Subscription } from "rxjs";
 import { BookResult, BookItem } from "../models/book.model";
 import { BookStore } from "../store/book.store";
 import { BookQuery, SearchMetaData } from "../queries/book.query";
+import { NgxSpinnerService } from "ngx-spinner";
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -31,7 +32,8 @@ export class BookService {
   private request$: Subscription;
   constructor(private bookStore: BookStore,
               private bookQuery: BookQuery,
-              private http: HttpClient) {
+              private http: HttpClient,
+              private spinner: NgxSpinnerService) {
   }
 // har&startIndex=&maxResults=40&filter=ebooks
   initalSearchParams() {
@@ -46,7 +48,7 @@ export class BookService {
 
   searchBooks(searchQuery: string , onlyEbooks = false): void {
     const startIndex = this.lastSearchMetaData.currentStartIndex;
-    let searchParams = `${searchQuery}&startIndex=${startIndex}&maxResults=40`;
+    let searchParams = `${searchQuery}&startIndex=${startIndex}&maxResults=10`;
     if (onlyEbooks) {
       searchParams += "&filter=ebooks";
     }
@@ -62,6 +64,7 @@ export class BookService {
       if (this.request$) {
         this.request$.unsubscribe();
       }
+      this.spinner.show();
       this.request$ = this.http.get<BookResult>(ApiURI, httpOptions).pipe(
         tap((result: BookResult) => {
           // tslint:disable-next-line: max-line-length
@@ -73,6 +76,7 @@ export class BookService {
         })
       ).subscribe(result => {
         this.request$ = null;
+        this.spinner.hide();
         console.log("Here All data", result);
       });
     }

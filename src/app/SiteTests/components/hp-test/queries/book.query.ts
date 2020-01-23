@@ -3,7 +3,7 @@ import { Query } from "@datorama/akita";
 import { BookItem , BookState } from "../models/book.model";
 import { BookStore } from "../store/book.store";
 import { Observable, combineLatest, of } from "rxjs";
-import { switchMap , filter, bufferCount, take } from "rxjs/operators";
+import { switchMap , filter, bufferCount, take, distinctUntilChanged } from "rxjs/operators";
 export interface SearchMetaData {
   totalPage: number;
   currentStartIndex: number;
@@ -23,15 +23,9 @@ export class BookQuery extends Query<BookState> {
 
   getStackBook(startIndex: number, pageSize: number): Observable<Array<BookItem>> {
     return this.items$.pipe(
-      filter((_result , idx) => startIndex >= idx ),
-      bufferCount(pageSize),
-      switchMap(result => {
-        if (Array.isArray(result)) {
-          return result;
-        } else {
-          return [result];
-        }
-      })
+      // take(1),
+      // filter((result , idx) => startIndex >= idx ),
+      // bufferCount(pageSize)
     );
   }
   getSearchMetaData(): Observable<SearchMetaData> {
