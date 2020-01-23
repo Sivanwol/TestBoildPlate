@@ -20,15 +20,24 @@ export class BookStore extends Store<BookState> {
     super(createInitialState());
   }
 
-  ClearSearch() {this.update((state: BookState) => {
-    return ({
-      list: [] ,
-      totalPages: 0 ,
-      currentStartIndex: 0,
-      maxStartIndex: 0,
-      pageSize: 40
+  ClearSearch() {
+    this.update((state: BookState) => {
+      return ({
+        list: [] ,
+        totalPages: 0 ,
+        currentStartIndex: 0,
+        maxStartIndex: 0,
+        pageSize: 40
+      });
     });
-  });
+  }
+
+  UpdatePaging(startIndex: number) {
+    this.update((state: BookState) => {
+      return ({
+        currentStartIndex: startIndex
+      });
+    });
   }
 
   UpdateSearchPageData(totalPages: number , nextCurrentStartIndex: number, maxStartIndex: number , items: Array<BookItem>) {

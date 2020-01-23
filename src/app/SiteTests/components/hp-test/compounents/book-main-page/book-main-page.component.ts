@@ -11,7 +11,7 @@ export class BookMainPageComponent implements OnInit {
   constructor(private bookService: BookService) { }
 
   ngOnInit() {
-    this.bookService.getBooks("har",false).subscribe(result => {
+    this.bookService.getBooks().subscribe(result => {
       console.log("Remote Search For Books", result);
     })
   }

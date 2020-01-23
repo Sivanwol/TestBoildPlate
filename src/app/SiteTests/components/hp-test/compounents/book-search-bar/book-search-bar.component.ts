@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from "@angular/forms";
+import { Component, OnInit } from "@angular/core";
+import { FormBuilder, Validators, FormGroup } from "@angular/forms";
+import { BookService } from '../../services/book.service';
 
 @Component({
-  selector: 'app-book-search-bar',
-  templateUrl: './book-search-bar.component.html',
-  styleUrls: ['./book-search-bar.component.scss']
+  selector: "app-book-search-bar",
+  templateUrl: "./book-search-bar.component.html",
+  styleUrls: ["./book-search-bar.component.scss"]
 })
 export class BookSearchBarComponent implements OnInit {
-  public form = null;
+  public form: FormGroup = null;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder,
+    private bookService: BookService) { }
+
 
   ngOnInit() {
     this.initalForm();
@@ -17,10 +20,18 @@ export class BookSearchBarComponent implements OnInit {
   initalForm() {
     this.form = this.fb.group({
       query: [
-        "",[Validators.required, Validators.minLength(2)]
+        "", [Validators.required, Validators.minLength(3)]
       ],
-      onlyEbook: [""]
+      onlyEbook: [false]
+    });
+    this.onChanges();
+  }
+  onChanges(): void {
+    this.form.valueChanges.subscribe(val => {
+      if (this.form.valid) {
+        const {query, onlyEbook} = this.form.value;
+        this.bookService.searchBooks(query, onlyEbook);
+      }
     });
   }
-
 }
