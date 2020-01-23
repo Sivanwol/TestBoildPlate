@@ -1,13 +1,12 @@
-<mat-card class="example-card">
+<mat-card class="example-card" *ngIf="hasSelected">
   <mat-card-header>
-    <img mat-card-avatar class="example-header-image" width="50px" src="http://books.google.com/books/content?id=-zRfAAAAcAAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api">
-    <mat-card-title>Sefer har ʾAdonay</mat-card-title>
-    <mat-card-subtitle>Has Ebook</mat-card-subtitle>
+    <mat-card-title>{{title}}</mat-card-title>
+    <mat-card-subtitle>{{hasEbook}}</mat-card-subtitle>
   </mat-card-header>
-  <img mat-card-image height="150px" src="http://books.google.com/books/content?id=IgRpAAAAcAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api" alt="Photo of a Shiba Inu">
+  <img mat-card-image height="150px" src="{{tumbnail}}">
   <mat-card-content>
     <p>
-      we-huʾ Zohar ʿal megilat Rut ha-meyuḥas leha-tana ha-gadol Rašbi ...
+      {{subtitle}}
     </p>
   </mat-card-content>
 </mat-card>

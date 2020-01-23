@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { HttpHeaders } from "@angular/common/http";
-import { tap, switchMap, take } from "rxjs/operators";
-import { throwError, Observable, Subscription } from "rxjs";
+import { tap, switchMap, take, find } from "rxjs/operators";
+import { throwError, Observable, Subscription , Subject, BehaviorSubject } from "rxjs";
 import { BookResult, BookItem } from "../models/book.model";
 import { BookStore } from "../store/book.store";
 import { BookQuery, SearchMetaData } from "../queries/book.query";
@@ -20,6 +20,7 @@ export enum BookPagingDirectorion {
 @Injectable({ providedIn: "root" })
 export class BookService {
 
+  private notifySelectedBook$: Subject<BookItem> = new Subject<BookItem>();
   private lastSearchQuery = "";
   private lastSearchOnlyEbookFlag = false;
   private lastSearchMetaData: SearchMetaData = {
@@ -34,6 +35,12 @@ export class BookService {
               private bookQuery: BookQuery,
               private http: HttpClient,
               private spinner: NgxSpinnerService) {
+  }
+  markBookAsSelected(book: BookItem) {
+    this.notifySelectedBook$.next(book);
+  }
+  getBookSelected() {
+    return this.notifySelectedBook$;
   }
 // har&startIndex=&maxResults=40&filter=ebooks
   initalSearchParams() {
@@ -54,7 +61,7 @@ export class BookService {
     }
     const ApiURI = this.ApiURI + searchParams;
     let newSearch = false;
-    if (this.lastSearchQuery !== searchQuery ) {
+    if (this.lastSearchQuery !== searchQuery && this.lastSearchOnlyEbookFlag === onlyEbooks ) {
       newSearch = true;
       this.initalSearchParams();
     }

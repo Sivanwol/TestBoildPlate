@@ -9,6 +9,6 @@
     <p style="font-size: 20px; color: white">Loading...</p>
   </ngx-spinner>
   <mat-list-item role="listitem" *ngFor="let item of items$ | async">
-    <app-book-list-item *ngIf="!!item" [bookItem]="item" (bookSelected)="OnBookSelected($event)"></app-book-list-item>
+    <app-book-list-item *ngIf="!!item" [bookItem]="item"></app-book-list-item>
   </mat-list-item>
 </mat-list>
