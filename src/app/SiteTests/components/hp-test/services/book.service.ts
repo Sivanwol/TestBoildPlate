@@ -1,11 +1,17 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
+import { HttpHeaders } from "@angular/common/http";
 import { tap, switchMap, take } from "rxjs/operators";
-import { throwError, Observable } from "rxjs";
+import { throwError, Observable, Subscription } from "rxjs";
 import { BookResult, BookItem } from "../models/book.model";
 import { BookStore } from "../store/book.store";
 import { BookQuery, SearchMetaData } from "../queries/book.query";
 
+const httpOptions = {
+  headers: new HttpHeaders({
+    "Content-Type": "application/json"
+  })
+};
 export enum BookPagingDirectorion {
   Next,
   Priv
@@ -14,6 +20,7 @@ export enum BookPagingDirectorion {
 export class BookService {
 
   private lastSearchQuery = "";
+  private lastSearchOnlyEbookFlag = false;
   private lastSearchMetaData: SearchMetaData = {
     totalPage: 0,
     currentStartIndex: 0,
@@ -21,6 +28,7 @@ export class BookService {
     pageSize: 40
   };
   private ApiURI = "https://www.googleapis.com/books/v1/volumes?q=";
+  private request$: Subscription;
   constructor(private bookStore: BookStore,
               private bookQuery: BookQuery,
               private http: HttpClient) {
@@ -28,38 +36,46 @@ export class BookService {
 // har&startIndex=&maxResults=40&filter=ebooks
   initalSearchParams() {
     this.bookStore.ClearSearch();
+    this.lastSearchMetaData = {
+      totalPage: 0,
+      currentStartIndex: 0,
+      maxStartIndex: 0,
+      pageSize: 40
+    };
   }
 
   searchBooks(searchQuery: string , onlyEbooks = false): void {
-    this.bookQuery.getSearchMetaData().pipe(
-      take(1),
-      tap(result => this.lastSearchMetaData = result),
-      switchMap(result => {
-        const startIndex = result.currentStartIndex;
-        let searchParams = `${searchQuery}&startIndex=${startIndex}&maxResults=40`;
-        if (onlyEbooks) {
-          searchParams += "&filter=ebooks";
-        }
-        const ApiURI = this.ApiURI + searchParams;
-        let newSearch = false;
-        if (this.lastSearchQuery !== searchQuery ) {
-          newSearch = true;
-          this.bookStore.ClearSearch();
-        }
-        if (this.lastSearchMetaData.maxStartIndex > startIndex || newSearch) {
-          this.lastSearchQuery = searchQuery;
-          return this.http.get<BookResult>(ApiURI).pipe(
-            take(1),
-            tap((result: BookResult) => {
-              // tslint:disable-next-line: max-line-length
-              const pages = Math.ceil((result.totalItems / this.lastSearchMetaData.pageSize) + (result.totalItems % this.lastSearchMetaData.pageSize));
-              const maxStartIndex = this.lastSearchMetaData.maxStartIndex > startIndex ? startIndex : this.lastSearchMetaData.maxStartIndex;
-              this.bookStore.UpdateSearchPageData(pages, startIndex, maxStartIndex, result.items);
-            })
-          );
-        }
-      })
-    );
+    const startIndex = this.lastSearchMetaData.currentStartIndex;
+    let searchParams = `${searchQuery}&startIndex=${startIndex}&maxResults=40`;
+    if (onlyEbooks) {
+      searchParams += "&filter=ebooks";
+    }
+    const ApiURI = this.ApiURI + searchParams;
+    let newSearch = false;
+    if (this.lastSearchQuery !== searchQuery ) {
+      newSearch = true;
+      this.initalSearchParams();
+    }
+    if (this.lastSearchMetaData.maxStartIndex > startIndex || newSearch) {
+      this.lastSearchQuery = searchQuery;
+      this.lastSearchOnlyEbookFlag = onlyEbooks;
+      if (this.request$) {
+        this.request$.unsubscribe();
+      }
+      this.request$ = this.http.get<BookResult>(ApiURI, httpOptions).pipe(
+        tap((result: BookResult) => {
+          // tslint:disable-next-line: max-line-length
+          const pages = Math.ceil((result.totalItems / this.lastSearchMetaData.pageSize) + (result.totalItems % this.lastSearchMetaData.pageSize));
+          const maxStartIndex = this.lastSearchMetaData.maxStartIndex > startIndex ? startIndex : this.lastSearchMetaData.maxStartIndex;
+          this.lastSearchMetaData.totalPage = pages;
+          this.lastSearchMetaData.maxStartIndex = maxStartIndex;
+          this.bookStore.UpdateSearchPageData(pages, startIndex, maxStartIndex, result.items);
+        })
+      ).subscribe(result => {
+        this.request$ = null;
+        console.log("Here All data", result);
+      });
+    }
   }
 
   updatePaging(pagingDirection: BookPagingDirectorion) {
@@ -68,6 +84,10 @@ export class BookService {
     if (pagingDirection === BookPagingDirectorion.Priv && startIndex > 0) {
       this.bookStore.UpdatePaging(startIndex - pageSize);
     } else {
+      const maxStartIndex =  startIndex + pageSize;
+      if (maxStartIndex > this.lastSearchMetaData.maxStartIndex) {
+        this.searchBooks(this.lastSearchQuery, this.lastSearchOnlyEbookFlag);
+      }
       this.bookStore.UpdatePaging(startIndex + pageSize);
     }
   }

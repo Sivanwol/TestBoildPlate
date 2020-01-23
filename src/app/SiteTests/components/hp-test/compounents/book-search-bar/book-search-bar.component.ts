@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators, FormGroup } from "@angular/forms";
 import { BookService } from '../../services/book.service';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: "app-book-search-bar",
@@ -27,7 +28,10 @@ export class BookSearchBarComponent implements OnInit {
     this.onChanges();
   }
   onChanges(): void {
-    this.form.valueChanges.subscribe(val => {
+    this.form.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(val => {
       if (this.form.valid) {
         const {query, onlyEbook} = this.form.value;
         this.bookService.searchBooks(query, onlyEbook);

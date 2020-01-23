@@ -23,7 +23,6 @@ export class BookQuery extends Query<BookState> {
 
   getStackBook(startIndex: number, pageSize: number): Observable<Array<BookItem>> {
     return this.items$.pipe(
-      take(1),
       filter((_result , idx) => startIndex >= idx ),
       bufferCount(pageSize),
       switchMap(result => {
