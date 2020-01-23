@@ -61,7 +61,7 @@ export class BookService {
     }
     const ApiURI = this.ApiURI + searchParams;
     let newSearch = false;
-    if (this.lastSearchQuery !== searchQuery && this.lastSearchOnlyEbookFlag === onlyEbooks ) {
+    if (this.lastSearchQuery !== searchQuery || this.lastSearchOnlyEbookFlag !== onlyEbooks ) {
       newSearch = true;
       this.initalSearchParams();
     }
